@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Store</title>
+  <!-- Links para estilos e scripts podem ser adicionados aqui -->
+</head>
+
+<body>
+  <h1>Book Store</h1>
+
+  <!-- Botões para alternar entre Cadastro e Pesquisa -->
+  <div>
+    <button class="btn btn-primary" (click)="showTab('register')">Cadastro de Livros</button>
+    <button class="btn btn-secondary" (click)="showTab('search')">Pesquisar Livros</button>
+  </div>
+
+  <!-- Formulário de Cadastro -->
+  <div *ngIf="currentTab === 'register'">
+    <form>
+      <input type="text" placeholder="Autor" class="form-control" name="author" [(ngModel)]="book.author"
+        [ngModelOptions]="{standalone: true}" required="true">
+      <input type="text" placeholder="Título" class="form-control" name="title" [(ngModel)]="book.title"
+        [ngModelOptions]="{standalone: true}" required="true">
+      <input type="text" placeholder="Sinopse" class="form-control" name="text" [(ngModel)]="book.text"
+        [ngModelOptions]="{standalone: true}" required="true">
+
+        <button *ngIf="btnSave" class="btn btn-primary" (click)="saveBook()">
+          <img width="20" height="20" src="https://img.icons8.com/ios/50/save--v1.png" alt="Salvar" style="margin-right: 5px;" />
+        </button>      <input type="button" value="Editar" *ngIf="!btnSave" class="btn btn-warning" (click)="editBook()">
+    </form>
+  </div>
+
+  <!-- Aba de Pesquisa de Livros -->
+  <div *ngIf="currentTab === 'search'">
+    <h2>Pesquisar Livros</h2>
+
+    <div>
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Pesquisar título do livro" />
+      <button class="btn btn-success" (click)="searchBookTitle()">Pesquisar</button>
+    </div>
+    <table class="table" *ngIf="filteredBooks.length > 0">
+      <tbody>
+        <tr *ngFor="let c of filteredBooks; index as i">
+          <td>{{i + 1}}</td>
+          <td>{{c.author}}</td>
+          <td>{{c.title}}</td>
+          <td>{{c.text}}</td>
+          <td><button class="btn btn-danger" (click)="removeBook(c.id)">Remover</button></td>
+          <td><button class="btn btn-warning" (click)="editBook()">Editar</button></td>
+        </tr>
+      </tbody>
+    </table>  
+  </div>
+</body>
+
+</html>
