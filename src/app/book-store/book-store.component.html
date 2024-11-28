@@ -5,19 +5,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Store</title>
-  <!-- Links para estilos e scripts podem ser adicionados aqui -->
 </head>
 
 <body>
   <h1>Book Store</h1>
-
-  <!-- Botões para alternar entre Cadastro e Pesquisa -->
   <div>
     <button class="btn btn-primary" (click)="showTab('register')">Cadastro de Livros</button>
     <button class="btn btn-secondary" (click)="showTab('search')">Pesquisar Livros</button>
+    <button class="btn btn-secondary" (click)="showAllBooks()">Mostrar todos os livros</button>
   </div>
-
-  <!-- Formulário de Cadastro -->
   <div *ngIf="currentTab === 'register'">
     <form>
       <input type="text" placeholder="Autor" class="form-control" name="author" [(ngModel)]="book.author"
@@ -32,11 +28,8 @@
         </button>      <input type="button" value="Editar" *ngIf="!btnSave" class="btn btn-warning" (click)="editBook()">
     </form>
   </div>
-
-  <!-- Aba de Pesquisa de Livros -->
   <div *ngIf="currentTab === 'search'">
     <h2>Pesquisar Livros</h2>
-
     <div>
       <input type="text" [(ngModel)]="searchQuery" placeholder="Pesquisar título do livro" />
       <button class="btn btn-success" (click)="searchBookTitle()">Pesquisar</button>
@@ -49,10 +42,10 @@
           <td>{{c.title}}</td>
           <td>{{c.text}}</td>
           <td><button class="btn btn-danger" (click)="removeBook(c.id)">Remover</button></td>
-          <td><button class="btn btn-warning" (click)="editBook()">Editar</button></td>
+          <td><button class="btn btn-warning" (click)="loadBookForEditing(c)">Editar</button></td>
         </tr>
       </tbody>
-    </table>  
+    </table>
   </div>
 </body>
 

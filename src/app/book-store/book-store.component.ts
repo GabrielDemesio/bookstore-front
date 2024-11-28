@@ -10,52 +10,67 @@ import { Book } from '../model/Book';
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './book-store.component.html',
-  styleUrls: ['./book-store.component.css'] 
+  styleUrls: ['./book-store.component.css']
 })
 export class BookStoreComponent {
   book = new Book();
   btnSave = true;
   books: Book[] = [];
-  filteredBooks: Book[] = []; // Inicialmente vazio
-  currentTab = 'register'; // Define a aba inicial
+  filteredBooks: Book[] = [];
+  currentTab = 'register';
   searchQuery = '';
 
   constructor(private service: BookService) {
-    this.getBooks(); // Chama o método para buscar os livros ao iniciar
   }
 
   saveBook(): void {
-    // Verifica se os campos obrigatórios estão preenchidos
     if (!this.book.author || !this.book.title || !this.book.text) {
       alert('Por favor, preencha todos os campos obrigatórios: Autor, Título e Sinopse.');
-      return; // Sai do método se os campos não estiverem preenchidos
+      return;
     }
-  
+
     this.service.SaveBookStore(this.book)
       .subscribe(returning => {
         this.books.push(returning);
-        this.filteredBooks.push(returning); // Também adiciona à lista filtrada
+        this.filteredBooks.push(returning);
       });
-  
+
     this.book = new Book();
     alert('Livro Salvo com sucesso!');
   }
+
   editBook(): void {
-    this.service.editBook(this.book)
-      .subscribe(returning => {
-        const position = this.books.findIndex(book => book.id === returning.id);
-        this.books[position] = returning;
-
-        // Atualiza também a lista filtrada
-        const filteredPosition = this.filteredBooks.findIndex(book => book.id === returning.id);
-        if (filteredPosition !== -1) {
-          this.filteredBooks[filteredPosition] = returning;
+    if (!this.book.id) {
+      alert(this.book.id);
+      return;
+    }
+    this.service.editBook(this.book).subscribe(
+      (updatedBook) => {
+        const index = this.books.findIndex((b) => b.id === updatedBook.id);
+        if (index >= -1) {
+          this.books[index] = updatedBook;
         }
-
+        const filteredBook = this.filteredBooks.findIndex((b) => b.id === updatedBook.id);
+        if (filteredBook !== -1) {
+            this.filteredBooks[filteredBook] = updatedBook;
+        }
+        alert('Livro Salvo com sucesso!');
+        this.book = new Book();
         this.btnSave = true;
-        alert('Livro alterado');
-      });
+      },
+      (error) => {
+        console.error('Erro ao salvar', error);
+        alert('Erro ao salvar livro');
+      }
+    );
   }
+
+  loadBookForEditing(selectedBook: Book): void {
+    this.book = {...selectedBook};
+    this.btnSave = true;
+    this.currentTab = 'register';
+  }
+
   removeBook(bookId: number | undefined): void {
     if (bookId === undefined) {
       alert('ID do livro não definido.');
@@ -73,45 +88,51 @@ export class BookStoreComponent {
       });
     }
   }
+
   getBooks(): void {
     this.service.getBooks().subscribe(
       (books: Book[]) => {
         this.books = books;
-        this.filteredBooks = books; // Inicializa a lista filtrada com todos os livros
-        console.log(this.books); // Verifique se os livros estão sendo carregados corretamente
+        this.filteredBooks = books;
+        console.log(this.books);
       },
       (error) => {
         console.error('Erro ao buscar livros:', error);
       }
     );
-  }  
+  }
+
+  // @ts-ignore
+  showAllBooks(): void{
+    this.getBooks();
+    this.currentTab = 'search';
+  }
+
   searchBookTitle(): void {
-    // Se a busca estiver vazia, mantenha a lista filtrada vazia
     if (!this.searchQuery) {
-      this.filteredBooks = []; // Mantenha a lista vazia até que uma pesquisa válida seja feita
+      this.filteredBooks = [];
       return;
     }
-  
-    // Filtra os livros com base na consulta
+
     this.filteredBooks = this.books.filter(book => {
       return book && book.title && book.title.toLowerCase().includes(this.searchQuery.toLowerCase());
     });
-  
-    // Se não houver livros correspondentes, você pode optar por exibir uma mensagem
+    this.book = new Book();
+
     if (this.filteredBooks.length === 0) {
       alert('Nenhum livro encontrado com o título pesquisado.');
     }
   }
+
   showTab(tab: string) {
     this.currentTab = tab;
 
     if (tab === 'search') {
-      this.filteredBooks = []; // Limpa a lista ao mudar para a aba de pesquisa
-      this.searchQuery = ''; // Limpa a consulta de pesquisa
+      this.filteredBooks = [];
+      this.searchQuery = '';
     }
   }
-  selectBook(position: number): void {
-    this.book = this.books[position];
-    this.btnSave = false;
+  ngOnInit(){
+    this.getBooks();
   }
 }

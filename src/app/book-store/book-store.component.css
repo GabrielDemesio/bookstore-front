@@ -15,19 +15,19 @@ h1{
 }
 form {
     width: 500px;
-    margin: 0 auto 30px; /* Centraliza o formulário e dá espaço abaixo */
+    margin: 0 auto 30px; 
     padding: 20px;
-    background-color: white; /* Fundo do formulário */
+    background-color: white; 
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 input[type="text"] {
-    width: calc(100% - 22px); /* Ajusta largura para incluir padding */
+    width: calc(100% - 22px); 
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box; /* Inclui padding e border no cálculo da largura */
+    box-sizing: border-box; 
 }
 input[type="button"] {
     padding: 10px 20px;
