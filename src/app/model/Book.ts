@@ -3,4 +3,5 @@ export class Book{
     author:string = '';
     title:string = '';
     text:string = '';
+    category:string = '';
 }

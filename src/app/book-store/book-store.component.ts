@@ -93,7 +93,7 @@ export class BookStoreComponent {
     this.service.getBooks().subscribe(
       (books: Book[]) => {
         this.books = books;
-        this.filteredBooks = books;
+        this.filteredBooks = books; // Armazena todos os livros inicialmente
         console.log(this.books);
       },
       (error) => {
@@ -101,6 +101,7 @@ export class BookStoreComponent {
       }
     );
   }
+
 
   // @ts-ignore
   showAllBooks(): void{
@@ -113,16 +114,41 @@ export class BookStoreComponent {
       this.filteredBooks = [];
       return;
     }
-
-    this.filteredBooks = this.books.filter(book => {
-      return book && book.title && book.title.toLowerCase().includes(this.searchQuery.toLowerCase());
-    });
+    this.filteredBooks = this.books.filter(book =>
+        book && (
+          (book.title && book.title.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
+          (book.category && book.category.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
+          (book.author && book.author.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        )
+    );
     this.book = new Book();
 
     if (this.filteredBooks.length === 0) {
       alert('Nenhum livro encontrado com o título pesquisado.');
     }
   }
+
+  searchCategoryFilosofyBooks(): void {
+    if (!this.searchQuery) {
+      this.filteredBooks = [];
+      return;
+    }
+
+    this.service.getBooksByCategory(this.searchQuery).subscribe(
+      (books: Book[]) => {
+        this.filteredBooks = books;
+        this.book = new Book();
+
+        if (this.filteredBooks.length === 0) {
+          alert('Nenhum livro encontrado na categoria: ' + this.searchQuery);
+        }
+      },
+      (error: any) => {
+        console.error('Erro ao buscar livros na categoria', error);
+      }
+    );
+  }
+
 
   showTab(tab: string) {
     this.currentTab = tab;

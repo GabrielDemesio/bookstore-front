@@ -23,6 +23,18 @@ export class BookService {
         })
       );
   }
+  getBooksByCategory(category: string): Observable<Book[]> {
+    return this.http.get<Book[]>(`http://localhost:4200/books/category/${category}`)
+      .pipe(
+        catchError(error => {
+          console.error('Erro ao buscar livros por categoria:', error.error?.text || error.message);
+          return throwError(() => new Error('Erro ao buscar livros por categoria'));
+        })
+      );
+  }
+
+
+
   SaveBookStore(book: Book): Observable<Book> {
     return this.http.post<Book>(this.apiUrl, book)
       .pipe(

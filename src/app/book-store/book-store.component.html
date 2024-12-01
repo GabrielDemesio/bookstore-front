@@ -13,6 +13,8 @@
     <button class="btn btn-primary" (click)="showTab('register')">Cadastro de Livros</button>
     <button class="btn btn-secondary" (click)="showTab('search')">Pesquisar Livros</button>
     <button class="btn btn-secondary" (click)="showAllBooks()">Mostrar todos os livros</button>
+    <button class="btn btn-secondary" (click)="searchCategoryFilosofyBooks()">Mostrar todos os livros de filosofia</button>
+
   </div>
   <div *ngIf="currentTab === 'register'">
     <form>
@@ -22,8 +24,10 @@
         [ngModelOptions]="{standalone: true}" required="true">
       <input type="text" placeholder="Sinopse" class="form-control" name="text" [(ngModel)]="book.text"
         [ngModelOptions]="{standalone: true}" required="true">
+      <input type="text" placeholder="Categoria" class="form-control" name="category" [(ngModel)]="book.category"
+             [ngModelOptions]="{standalone: true}" required="true">
 
-        <button *ngIf="btnSave" class="btn btn-primary" (click)="saveBook()">
+      <button *ngIf="btnSave" class="btn btn-primary" (click)="saveBook()">
           <img width="20" height="20" src="https://img.icons8.com/ios/50/save--v1.png" alt="Salvar" style="margin-right: 5px;" />
         </button>      <input type="button" value="Editar" *ngIf="!btnSave" class="btn btn-warning" (click)="editBook()">
     </form>
@@ -37,10 +41,10 @@
     <table class="table" *ngIf="filteredBooks.length > 0">
       <tbody>
         <tr *ngFor="let c of filteredBooks; index as i">
-          <td>{{i + 1}}</td>
           <td>{{c.author}}</td>
           <td>{{c.title}}</td>
           <td>{{c.text}}</td>
+          <td>{{c.category}}</td>
           <td><button class="btn btn-danger" (click)="removeBook(c.id)">Remover</button></td>
           <td><button class="btn btn-warning" (click)="loadBookForEditing(c)">Editar</button></td>
         </tr>
